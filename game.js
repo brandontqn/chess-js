@@ -8,8 +8,8 @@ export class Game {
     start() {
         // once the DOM is loaded (i.e. the board inside index.html is loaded), render the chess pieces
         addEventListener('DOMContentLoaded', () => {
-            console.log('Hello World!');
-            this.board.renderPieces();
+            this.board.render();
+            this.board.addEventListeners();
         });
     };
 };

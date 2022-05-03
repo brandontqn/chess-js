@@ -1,3 +1,8 @@
+export const playerTypes = {
+    white: "white",
+    black: "black"
+}
+
 export const gameSetupType = {
     initialGame: "initialGame",
     otherGame: "otherGame"
