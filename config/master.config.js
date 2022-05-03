@@ -1,3 +1,4 @@
 export const masterConfig = {
-    useInitialGame: true
+    useInitialGame: true,
+    boardSize: 8
 }
