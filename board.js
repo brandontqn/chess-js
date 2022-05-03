@@ -135,7 +135,7 @@ export class Board {
         for (let candidateSrcCoordinate of candidateSrcCoordinates) {
             const possibleMoves = this.findPossibleMoves(pieceType, candidateSrcCoordinate);
             for (let move of possibleMoves) {
-                if (move == dstCoordinate) {
+                if (move === dstCoordinate) {
                     return candidateSrcCoordinate;
                 }
             }
@@ -162,7 +162,23 @@ export class Board {
 
     findPossibleBishopMoves(srcCoordinate) {}
 
-    findPossibleKnightMoves(srcCoordinate) {}
+    findPossibleKnightMoves(srcCoordinate) {
+        const currentFile = srcCoordinate[0];
+        const currentRank = srcCoordinate[1];
+
+        const allPossibleMoves = [
+            `${columnNumberToFile[fileToColumnNumber[currentFile]-2]}${parseInt(currentRank)+1}`,
+            `${columnNumberToFile[fileToColumnNumber[currentFile]-1]}${parseInt(currentRank)+2}`,
+            `${columnNumberToFile[fileToColumnNumber[currentFile]+1]}${parseInt(currentRank)+2}`,
+            `${columnNumberToFile[fileToColumnNumber[currentFile]+2]}${parseInt(currentRank)+1}`,
+            `${columnNumberToFile[fileToColumnNumber[currentFile]+2]}${parseInt(currentRank)-1}`,
+            `${columnNumberToFile[fileToColumnNumber[currentFile]+1]}${parseInt(currentRank)-2}`,
+            `${columnNumberToFile[fileToColumnNumber[currentFile]-1]}${parseInt(currentRank)-2}`,
+            `${columnNumberToFile[fileToColumnNumber[currentFile]-2]}${parseInt(currentRank)-1}`
+        ];
+
+        return allPossibleMoves.filter(move => this.isCoordinateOnBoard(move));
+    }
 
     findPossibleRookMoves(srcCoordinate) {}
 
@@ -170,7 +186,7 @@ export class Board {
 
     findPossibleKingMoves(srcCoordinate) {}
     
-    findPossiblePawnMoves(srcCoordinate) {        
+    findPossiblePawnMoves(srcCoordinate) {
         return this.state.currentPlayer == playerTypes.white 
             ? this.findPossiblePawnMovesForWhite(srcCoordinate)
             : this.findPossiblePawnMovesForBlack(srcCoordinate);
@@ -244,12 +260,22 @@ export class Board {
         const file = coordinate[0];
         const rank = coordinate[1];
         
-        return fileToColumnNumber[file] && rank >= 0 && rank <= masterConfig.boardSize;
+        return fileToColumnNumber[file] && rank >= 1 && rank <= masterConfig.boardSize;
     }
 
     cellContainsPiece(coordinate) {
         const cell = document.getElementById(coordinate);
-        return cell.hasAttribute('piece-type');
+        if (cell) {
+            return cell.hasAttribute('piece-type');
+        }
+        return -1;
+    }
+
+    cellContainsWhitePiece(coordinate) {
+        const cell = document.getElementById(coordinate);
+        if (cell) {
+
+        }
     }
 
     parseMove(move) {
