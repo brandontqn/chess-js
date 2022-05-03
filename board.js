@@ -5,20 +5,27 @@ import { pieceImages } from './config/pieceImages.config.js';
 export class Board {
     constructor() {
         this.state = {
-            currentPlayer: playerTypes.white
+            currentPlayer: null,
+            pieceCoordinates: {}
         };
     };
 
     render() {
         let setupType = masterConfig.useInitialGame ? gameSetupType.initialGame : gameSetupType.otherGame;
         let setup = gameSetups[setupType];
-        this.state.pieceCoordinates = this.findPieceCoordinates(setup);
-
+        
         this.placePieceBoxNumbers();
         this.placePiecesInCoordinates(setup);
+
+        this.initializeState(setup);
     };
 
-    findPieceCoordinates(setup) {
+    initializeState(setup) {
+        this.state.currentPlayer = playerTypes.white;
+        this.state.pieceCoordinates = this.initializePieceCoordinates(setup);
+    }
+
+    initializePieceCoordinates(setup) {
         const pieceCoordinates = {};
         for (let coordinate in setup) {
             const piece = setup[coordinate];
@@ -73,12 +80,18 @@ export class Board {
         const fullPieceName = `${this.state.currentPlayer}_${pieceType}`;
 
         this.clearCell(srcCoordinate);
+        this.clearCell(dstCoordinate);
         this.renderCell(fullPieceName, dstCoordinate);
+        this.updateState();
     };
 
     prepareForNextMove() {
         this.clearMoveInput();
-        this.changePlayer();
+    }
+
+    updateState() {
+        this.changeCurrentPlayer();
+        this.updatePieceCoordinates();
     }
 
     clearMoveInput() {
@@ -86,8 +99,26 @@ export class Board {
         move.value = "";
     }
 
-    changePlayer() {
+    changeCurrentPlayer() {
         this.state.currentPlayer = this.state.currentPlayer == playerTypes.white ? playerTypes.black : playerTypes.white;
+    }
+
+    updatePieceCoordinates() {
+        const pieceCoordinates = {};
+        const cellElements = document.getElementsByClassName('cell');
+        for (let cell of cellElements) {
+            if (cell.hasAttribute('piece-type')) {
+                const pieceType = cell.getAttribute('piece-type');
+                const coordinate = cell.getAttribute('id');
+                if (!pieceCoordinates[pieceType]) {
+                    pieceCoordinates[pieceType] = [coordinate];
+                }
+                else {
+                    pieceCoordinates[pieceType].push(coordinate);
+                }
+            }
+        }
+        this.state.pieceCoordinates = pieceCoordinates;
     }
 
     findSrcCoordinate(currPlayer, pieceType, dstCoordinate) {
@@ -172,7 +203,9 @@ export class Board {
         const cellElement = document.getElementById(position);
         const imgElement = cellElement.getElementsByTagName('img');
         
-        cellElement.removeChild(imgElement[0]);
+        if (imgElement.length > 0) {
+            cellElement.removeChild(imgElement[0]);
+        }
         cellElement.removeAttribute('piece-type');
     };
 
