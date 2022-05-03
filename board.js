@@ -1,5 +1,5 @@
 import { masterConfig } from './config/master.config.js'
-import { playerTypes, gameSetupType, gameSetups } from './config/gameSetups.config.js';
+import { columnNumberToFile, fileToColumnNumber, letterToPiece, playerTypes, gameSetupType, gameSetups, moveType } from './config/gameSetups.config.js';
 import { pieceImages } from './config/pieceImages.config.js';
 
 export class Board {
@@ -11,7 +11,9 @@ export class Board {
     };
 
     render() {
-        let setupType = masterConfig.useInitialGame ? gameSetupType.initialGame : gameSetupType.otherGame;
+        let setupType = masterConfig.useInitialGame 
+            ? gameSetupType.initialGame 
+            : gameSetupType.otherGame;
         let setup = gameSetups[setupType];
         
         this.placePieceBoxNumbers();
@@ -100,7 +102,9 @@ export class Board {
     }
 
     changeCurrentPlayer() {
-        this.state.currentPlayer = this.state.currentPlayer == playerTypes.white ? playerTypes.black : playerTypes.white;
+        this.state.currentPlayer = this.state.currentPlayer == playerTypes.white 
+            ? playerTypes.black 
+            : playerTypes.white;
     }
 
     updatePieceCoordinates() {
@@ -129,7 +133,7 @@ export class Board {
 
     findValidSrcCoordinate(candidateSrcCoordinates, dstCoordinate, pieceType) {
         for (let candidateSrcCoordinate of candidateSrcCoordinates) {
-            const possibleMoves = this.findPossibleMoves(this.state.currentPlayer, pieceType, candidateSrcCoordinate);
+            const possibleMoves = this.findPossibleMoves(pieceType, candidateSrcCoordinate);
             for (let move of possibleMoves) {
                 if (move == dstCoordinate) {
                     return candidateSrcCoordinate;
@@ -139,7 +143,7 @@ export class Board {
         return -1
     }
 
-    findPossibleMoves(playerType, pieceType, srcCoordinate) {
+    findPossibleMoves(pieceType, srcCoordinate) {
         switch(pieceType) {
             case 'bishop':
                 return this.findPossibleBishopMoves(srcCoordinate);
@@ -152,7 +156,7 @@ export class Board {
             case 'king':
                 return this.findPossibleKingMoves(srcCoordinate);
             default:
-                return this.findPossiblePawnMoves(playerType, srcCoordinate);
+                return this.findPossiblePawnMoves(srcCoordinate);
         };
     }
 
@@ -166,39 +170,94 @@ export class Board {
 
     findPossibleKingMoves(srcCoordinate) {}
     
-    findPossiblePawnMoves(playerType, srcCoordinate) {
-        const file = srcCoordinate[0];
-        let rank = srcCoordinate[1];
-        
-        let count = 2
+    findPossiblePawnMoves(srcCoordinate) {        
+        return this.state.currentPlayer == playerTypes.white 
+            ? this.findPossiblePawnMovesForWhite(srcCoordinate)
+            : this.findPossiblePawnMovesForBlack(srcCoordinate);
+    }
+
+    findPossiblePawnMovesForWhite(srcCoordinate) {
+        const currentFile = srcCoordinate[0];
+        let currentRank = srcCoordinate[1];
+
         const possibleMoves = [];
-        while (count > 0 && rank < masterConfig.boardSize && rank > 0) {
-            if (playerType == playerTypes.white) {
-                rank++;
+
+        const oneForward = `${currentFile}${parseInt(currentRank)+1}`;
+        const twoForward = `${currentFile}${parseInt(currentRank)+2}`;
+        if (this.isValidPawnMove(oneForward)) {
+            possibleMoves.push(oneForward);
+            if (this.isValidPawnMove(twoForward)) {
+                possibleMoves.push(twoForward);
             }
-            else {
-                rank--;
-            }
-            count--;
-            possibleMoves.push(`${file}${rank}`);
         }
+
+        const eatLeft = `${columnNumberToFile[fileToColumnNumber[currentFile]-1]}${parseInt(currentRank)+1}`;
+        if (this.isValidPawnTake(eatLeft)) {
+            possibleMoves.push(eatLeft)
+        }
+
+        const eatRight = `${columnNumberToFile[fileToColumnNumber[currentFile]+1]}${parseInt(currentRank)+1}`;
+        if (this.isValidPawnTake(eatRight)) {
+            possibleMoves.push(eatRight);
+        }
+
         return possibleMoves;
+    }
+
+    findPossiblePawnMovesForBlack(srcCoordinate) {
+        const currentFile = srcCoordinate[0];
+        let currentRank = srcCoordinate[1];
+
+        const possibleMoves = [];
+
+        const oneForward = `${currentFile}${parseInt(currentRank)-1}`;
+        const twoForward = `${currentFile}${parseInt(currentRank)-2}`;
+        if (this.isValidPawnMove(oneForward)) {
+            possibleMoves.push(oneForward);
+            if (this.isValidPawnMove(twoForward)) {
+                possibleMoves.push(twoForward);
+            }
+        }
+
+        const eatLeft = `${columnNumberToFile[fileToColumnNumber[currentFile]-1]}${parseInt(currentRank)-1}`;
+        if (this.isValidPawnTake(eatLeft)) {
+            possibleMoves.push(eatLeft)
+        }
+
+        const eatRight = `${columnNumberToFile[fileToColumnNumber[currentFile]+1]}${parseInt(currentRank)-1}`;
+        if (this.isValidPawnTake(eatRight)) {
+            possibleMoves.push(eatRight);
+        }
+
+        return possibleMoves;
+    }
+
+    isValidPawnMove(coordinate) {
+        return this.isCoordinateOnBoard(coordinate) && !this.cellContainsPiece(coordinate);
+    }
+
+    isValidPawnTake(coordinate) {
+        return this.isCoordinateOnBoard(coordinate) && this.cellContainsPiece(coordinate);
+    }
+
+    isCoordinateOnBoard(coordinate) {
+        const file = coordinate[0];
+        const rank = coordinate[1];
+        
+        return fileToColumnNumber[file] && rank >= 0 && rank <= masterConfig.boardSize;
+    }
+
+    cellContainsPiece(coordinate) {
+        const cell = document.getElementById(coordinate);
+        return cell.hasAttribute('piece-type');
     }
 
     parseMove(move) {
         return move.length == 2 
             ? ['pawn', move]
-            : [this.letterToPiece[move[0]], move.substring(1)];
+            : [letterToPiece[move[0]], move.substring(1)];
     };
-
-    letterToPiece = {
-        "K": "king",
-        "Q": "queen",
-        "N": "knight",
-        "B": "bishop",
-        "R": "rook"
-    };
-
+    
     clearCell(position) {
         const cellElement = document.getElementById(position);
         const imgElement = cellElement.getElementsByTagName('img');

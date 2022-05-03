@@ -1,11 +1,11 @@
 export const playerTypes = {
-    white: "white",
-    black: "black"
+    white: 'white',
+    black: 'black'
 }
 
 export const gameSetupType = {
-    initialGame: "initialGame",
-    otherGame: "otherGame"
+    initialGame: 'initialGame',
+    otherGame: 'otherGame'
 };
 
 export const gameSetups = {
@@ -46,3 +46,38 @@ export const gameSetups = {
     },
     otherGame: {}
 };
+
+export const letterToPiece = {
+    'K': 'king',
+    'Q': 'queen',
+    'N': 'knight',
+    'B': 'bishop',
+    'R': 'rook'
+};
+
+export const fileToColumnNumber = {
+    'a': 1,
+    'b': 2,
+    'c': 3,
+    'd': 4,
+    'e': 5,
+    'f': 6,
+    'g': 7,
+    'h': 8
+}
+
+export const columnNumberToFile = {
+    1: 'a',
+    2: 'b',
+    3: 'c',
+    4: 'd',
+    5: 'e',
+    6: 'f',
+    7: 'g',
+    8: 'h',
+}
+
+export const moveType = {
+    move: 'move',
+    take: 'take'
+}
