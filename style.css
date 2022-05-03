@@ -1,0 +1,40 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+
+.board {
+    height: 400px;
+    width: 400px;
+    display: flex;
+    border: 1px solid black;
+}
+
+.cell {
+    height: 50px;
+    width: 50px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(216, 206, 191);
+}
+
+.piece {
+    height: 45px;
+    width: 40px;
+}
+
+.col:nth-child(2n-1) .cell:nth-child(2n) {
+    background-color: rgb(169, 58, 58);
+}
+
+.col:nth-child(2n) .cell:nth-child(2n-1) {
+    background-color: rgb(169, 58, 58);
+}
