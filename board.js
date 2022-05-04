@@ -94,7 +94,7 @@ export class Board {
         const move = document.getElementById('move').value;
         const [pieceType, dstCoordinate] = this.parseMove(move);
 
-        const srcCoordinate = this.findSrcCoordinate(this.state.currentPlayer, pieceType, dstCoordinate);
+        const srcCoordinate = this.findSrcCoordinate(pieceType, dstCoordinate);
         if (srcCoordinate === -1) {
             window.alert('Invalid move, try again.');
             return;
@@ -105,6 +105,7 @@ export class Board {
         this.clearCell(dstCoordinate);
         this.renderCell(fullPieceName, dstCoordinate);
         this.updateState();
+        this.renderPlayerIndicator();
     };
 
     prepareForNextMove() {
@@ -146,8 +147,8 @@ export class Board {
         this.state.pieceCoordinates = pieceCoordinates;
     }
 
-    findSrcCoordinate(currPlayer, pieceType, dstCoordinate) {
-        const fullPieceName = `${currPlayer}_${pieceType}`;
+    findSrcCoordinate(pieceType, dstCoordinate) {
+        const fullPieceName = `${this.state.currentPlayer}_${pieceType}`;
         const candidateSrcCoordinates = this.state.pieceCoordinates[fullPieceName];
         return this.findValidSrcCoordinate(candidateSrcCoordinates, dstCoordinate, pieceType);
     }
@@ -446,7 +447,7 @@ export class Board {
     parseMove(move) {
         return move.length == 2 
             ? ['pawn', move]
-            : [letterToPiece[move[0]], move.substring(1)];
+            : [letterToPiece[move[0].toUpperCase()], move.substring(1).toLowerCase()];
     };
     
     clearCell(position) {
