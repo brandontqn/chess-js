@@ -201,7 +201,7 @@ export class Board {
             `${columnNumberToFile[fileToColumnNumber[currentFile]-2]}${parseInt(currentRank)-1}`
         ];
 
-        return allPossibleMoves.filter(move => this.isCoordinateOnBoard(move) && (!this.cellContainsPiece(move) || this.cellContainsOpponentPiece(move)));
+        return allPossibleMoves.filter(move => this.coordinateIsOnBoard(move) && (!this.cellContainsPiece(move) || this.cellContainsOpponentPiece(move)));
     }
 
     findPossibleRookMoves(srcCoordinate) {
@@ -221,7 +221,7 @@ export class Board {
 
         for (let [f, r] of directions) {
             const move = this.createCoordinate(columnNumberToFile[fileToColumnNumber[currentFile]+f], parseInt(currentRank)+r);
-            if (this.isCoordinateOnBoard(move) && (!this.cellContainsPiece(move) || this.cellContainsOpponentPiece(move))) {
+            if (this.coordinateIsOnBoard(move) && (!this.cellContainsPiece(move) || this.cellContainsOpponentPiece(move)) && !this.cellIsUnderAttack(move)) {
                 possibleMoves.push(move);
             }
         }
@@ -292,11 +292,11 @@ export class Board {
     }
 
     isValidPawnMove(coordinate) {
-        return this.isCoordinateOnBoard(coordinate) && !this.cellContainsPiece(coordinate);
+        return this.coordinateIsOnBoard(coordinate) && !this.cellContainsPiece(coordinate);
     }
 
     isValidPawnTake(coordinate) {
-        return this.isCoordinateOnBoard(coordinate) && this.cellContainsPiece(coordinate) && this.cellContainsOpponentPiece(coordinate);
+        return this.coordinateIsOnBoard(coordinate) && this.cellContainsPiece(coordinate) && this.cellContainsOpponentPiece(coordinate);
     }
 
     findLateralMoves(srcCoordinate) {
@@ -307,23 +307,23 @@ export class Board {
         
         let f = fileToColumnNumber[currentFile] - 1;
         let move = this.createCoordinate(columnNumberToFile[f], currentRank);
-        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+        while (this.coordinateIsOnBoard(move) && !this.cellContainsPiece(move)) {
             moves.push(move);
             move = this.createCoordinate(columnNumberToFile[--f], currentRank);
         }
 
-        if (this.isCoordinateOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
+        if (this.coordinateIsOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
             moves.push(move);
         }
 
         f = fileToColumnNumber[currentFile] + 1;
         move = this.createCoordinate(columnNumberToFile[f], currentRank);
-        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+        while (this.coordinateIsOnBoard(move) && !this.cellContainsPiece(move)) {
             moves.push(move);
             move = this.createCoordinate(columnNumberToFile[++f], currentRank);
         }
 
-        if (this.isCoordinateOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
+        if (this.coordinateIsOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
             moves.push(move);
         }
 
@@ -338,23 +338,23 @@ export class Board {
 
         let r = parseInt(currentRank) - 1;
         let move = this.createCoordinate(currentFile, r);
-        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+        while (this.coordinateIsOnBoard(move) && !this.cellContainsPiece(move)) {
             moves.push(move);
             move = this.createCoordinate(currentFile, --r);
         }
 
-        if (this.isCoordinateOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
+        if (this.coordinateIsOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
             moves.push(move);
         }
 
         r = parseInt(currentRank) + 1;
         move = this.createCoordinate(currentFile, r);
-        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+        while (this.coordinateIsOnBoard(move) && !this.cellContainsPiece(move)) {
             moves.push(move);
             move = this.createCoordinate(currentFile, ++r);
         }
 
-        if (this.isCoordinateOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
+        if (this.coordinateIsOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
             moves.push(move);
         }
 
@@ -370,55 +370,55 @@ export class Board {
         let f = fileToColumnNumber[currentFile] - 1;
         let r = parseInt(currentRank) + 1;
         let move = this.createCoordinate(columnNumberToFile[f], r);
-        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+        while (this.coordinateIsOnBoard(move) && !this.cellContainsPiece(move)) {
             moves.push(move);
             move = this.createCoordinate(columnNumberToFile[--f], ++r);
         }
 
-        if (this.isCoordinateOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
+        if (this.coordinateIsOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
             moves.push(move);
         }
 
         f = fileToColumnNumber[currentFile] - 1;
         r = parseInt(currentRank) - 1;
         move = this.createCoordinate(columnNumberToFile[f], r);
-        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+        while (this.coordinateIsOnBoard(move) && !this.cellContainsPiece(move)) {
             moves.push(move);
             move = this.createCoordinate(columnNumberToFile[--f], --r);
         }
 
-        if (this.isCoordinateOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
+        if (this.coordinateIsOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
             moves.push(move);
         }
 
         f = fileToColumnNumber[currentFile] + 1;
         r = parseInt(currentRank) + 1;
         move = this.createCoordinate(columnNumberToFile[f], r);
-        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+        while (this.coordinateIsOnBoard(move) && !this.cellContainsPiece(move)) {
             moves.push(move);
             move = this.createCoordinate(columnNumberToFile[++f], ++r);
         }
 
-        if (this.isCoordinateOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
+        if (this.coordinateIsOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
             moves.push(move);
         }
 
         f = fileToColumnNumber[currentFile] + 1;
         r = parseInt(currentRank) - 1;
         move = this.createCoordinate(columnNumberToFile[f], r);
-        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+        while (this.coordinateIsOnBoard(move) && !this.cellContainsPiece(move)) {
             moves.push(move);
             move = this.createCoordinate(columnNumberToFile[++f], --r);
         }
 
-        if (this.isCoordinateOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
+        if (this.coordinateIsOnBoard(move) && this.cellContainsPiece(move) && this.cellContainsOpponentPiece(move)) {
             moves.push(move);
         }
 
         return moves;
     }
 
-    isCoordinateOnBoard(coordinate) {
+    coordinateIsOnBoard(coordinate) {
         const file = coordinate[0];
         const rank = coordinate[1];
         return fileToColumnNumber[file] && rank >= 1 && rank <= masterConfig.boardSize;
@@ -442,6 +442,11 @@ export class Board {
             return cell.getAttribute('piece-type')[0] == opponentColour[0];
         }
         return -1;
+    }
+
+    // WIP
+    cellIsUnderAttack(coordinate) {
+        return false;
     }
 
     parseMove(move) {
