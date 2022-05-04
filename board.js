@@ -190,7 +190,22 @@ export class Board {
         return [...this.findLateralMoves(srcCoordinate), ...this.findVerticalMoves(srcCoordinate), ...this.findDiagonalMoves(srcCoordinate)];
     }
 
-    findPossibleKingMoves(srcCoordinate) {}
+    findPossibleKingMoves(srcCoordinate) {
+        const currentFile = srcCoordinate[0];
+        const currentRank = srcCoordinate[1];
+
+        const possibleMoves = [];
+        const directions = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, -1], [1, -1], [-1, 1]];
+
+        for (let [f, r] of directions) {
+            const move = this.createCoordinate(columnNumberToFile[fileToColumnNumber[currentFile]+f], parseInt(currentRank)+r);
+            if (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+                possibleMoves.push(move);
+            }
+        }        
+
+        return possibleMoves;
+    }
     
     findPossiblePawnMoves(srcCoordinate) {
         return this.state.currentPlayer == playerTypes.white 
@@ -360,13 +375,6 @@ export class Board {
         }
         return -1;
     }
-
-    // cellContainsWhitePiece(coordinate) {
-    //     const cell = document.getElementById(coordinate);
-    //     if (cell) {
-
-    //     }
-    // }
 
     parseMove(move) {
         return move.length == 2 
