@@ -245,7 +245,7 @@ export class Board {
         const twoForward = `${currentFile}${parseInt(currentRank)+2}`;
         if (this.isValidPawnMove(oneForward)) {
             possibleMoves.push(oneForward);
-            if (this.isValidPawnMove(twoForward)) {
+            if (this.isValidPawnMove(twoForward) && parseInt(currentRank) === 2) {
                 possibleMoves.push(twoForward);
             }
         }
@@ -273,7 +273,7 @@ export class Board {
         const twoForward = `${currentFile}${parseInt(currentRank)-2}`;
         if (this.isValidPawnMove(oneForward)) {
             possibleMoves.push(oneForward);
-            if (this.isValidPawnMove(twoForward)) {
+            if (this.isValidPawnMove(twoForward) && parseInt(currentRank) === masterConfig.boardSize - 1) {
                 possibleMoves.push(twoForward);
             }
         }
