@@ -18,13 +18,19 @@ export class Board {
         
         this.placePieceBoxNumbers();
         this.placePiecesInCoordinates(setup);
-
+        
         this.initializeState(setup);
+        this.renderPlayerIndicator();
     };
 
     initializeState(setup) {
         this.state.currentPlayer = playerTypes.white;
         this.state.pieceCoordinates = this.initializePieceCoordinates(setup);
+    }
+
+    renderPlayerIndicator() {
+        const playerIndicator = document.getElementById('player');
+        playerIndicator.innerHTML = `It's ${this.state.currentPlayer.toUpperCase()}'s turn!`;
     }
 
     initializePieceCoordinates(setup) {
