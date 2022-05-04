@@ -1,8 +1,3 @@
-export const playerTypes = {
-    white: 'white',
-    black: 'black'
-}
-
 export const gameSetupType = {
     initialGame: 'initialGame',
     otherGame: 'otherGame'
@@ -75,9 +70,4 @@ export const columnNumberToFile = {
     6: 'f',
     7: 'g',
     8: 'h',
-}
-
-export const moveType = {
-    move: 'move',
-    take: 'take'
 }

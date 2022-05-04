@@ -1,6 +1,6 @@
-import { masterConfig } from './config/master.config.js'
-import { columnNumberToFile, fileToColumnNumber, letterToPiece, playerTypes, gameSetupType, gameSetups, moveType } from './config/gameSetups.config.js';
-import { pieceImages } from './config/pieceImages.config.js';
+import { masterConfig, playerTypes } from '../config/master.config.js'
+import { columnNumberToFile, fileToColumnNumber, letterToPiece, gameSetupType, gameSetups } from '../config/gameSetups.config.js';
+import { pieceImages } from '../config/pieceImages.config.js';
 
 export class Board {
     constructor() {
