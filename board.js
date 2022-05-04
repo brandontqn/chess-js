@@ -183,15 +183,12 @@ export class Board {
     }
 
     findPossibleRookMoves(srcCoordinate) {
-        const possibleMoves = []
-
-        possibleMoves.push(...this.findLateralMoves(srcCoordinate));
-        possibleMoves.push(...this.findVerticalMoves(srcCoordinate));
-
-        return possibleMoves;
+        return [...this.findLateralMoves(srcCoordinate), ...this.findVerticalMoves(srcCoordinate)];
     }
 
-    findPossibleQueenMoves(srcCoordinate) {}
+    findPossibleQueenMoves(srcCoordinate) {
+        return [...this.findLateralMoves(srcCoordinate), ...this.findVerticalMoves(srcCoordinate), ...this.findDiagonalMoves(srcCoordinate)];
+    }
 
     findPossibleKingMoves(srcCoordinate) {}
     
