@@ -160,7 +160,9 @@ export class Board {
         };
     }
 
-    findPossibleBishopMoves(srcCoordinate) {}
+    findPossibleBishopMoves(srcCoordinate) {
+        return this.findDiagonalMoves(srcCoordinate);
+    }
 
     findPossibleKnightMoves(srcCoordinate) {
         const currentFile = srcCoordinate[0];
@@ -307,7 +309,46 @@ export class Board {
         return moves;
     }
 
-    findDiagonalMoves(coordinate) {}
+    findDiagonalMoves(srcCoordinate) {
+        const currentFile = srcCoordinate[0];
+        const currentRank = srcCoordinate[1];
+
+        const moves = [];
+
+        let f = fileToColumnNumber[currentFile] - 1;
+        let r = parseInt(currentRank) + 1;
+        let move = this.createCoordinate(columnNumberToFile[f], r);
+        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+            moves.push(move);
+            move = this.createCoordinate(columnNumberToFile[--f], ++r);
+        }
+
+        f = fileToColumnNumber[currentFile] - 1;
+        r = parseInt(currentRank) - 1;
+        move = this.createCoordinate(columnNumberToFile[f], r);
+        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+            moves.push(move);
+            move = this.createCoordinate(columnNumberToFile[--f], --r);
+        }
+
+        f = fileToColumnNumber[currentFile] + 1;
+        r = parseInt(currentRank) + 1;
+        move = this.createCoordinate(columnNumberToFile[f], r);
+        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+            moves.push(move);
+            move = this.createCoordinate(columnNumberToFile[++f], ++r);
+        }
+
+        f = fileToColumnNumber[currentFile] + 1;
+        r = parseInt(currentRank) - 1;
+        move = this.createCoordinate(columnNumberToFile[f], r);
+        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+            moves.push(move);
+            move = this.createCoordinate(columnNumberToFile[++f], --r);
+        }
+
+        return moves;
+    }
 
     isCoordinateOnBoard(coordinate) {
         const file = coordinate[0];
