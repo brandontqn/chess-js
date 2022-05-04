@@ -60,6 +60,7 @@ export class Board {
 
     addEventListeners() {
         this.addMoveSubmitButtonListener();
+        this.addMoveInputListener();
     };
 
     addMoveSubmitButtonListener() {
@@ -68,6 +69,15 @@ export class Board {
             this.handleMoveSubmission();
         });
     };
+
+    addMoveInputListener() {
+        const input = document.getElementById('move');
+        input.addEventListener('keyup', event => {
+            if (event.key == 'Enter') {
+                this.handleMoveSubmission();
+            }
+        });
+    }
 
     handleMoveSubmission() {
         this.makeMove();
@@ -99,6 +109,7 @@ export class Board {
     clearMoveInput() {
         const move = document.getElementById('move');
         move.value = "";
+        move.focus();
     }
 
     changeCurrentPlayer() {
