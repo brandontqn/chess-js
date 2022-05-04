@@ -180,7 +180,14 @@ export class Board {
         return allPossibleMoves.filter(move => this.isCoordinateOnBoard(move));
     }
 
-    findPossibleRookMoves(srcCoordinate) {}
+    findPossibleRookMoves(srcCoordinate) {
+        const possibleMoves = []
+
+        possibleMoves.push(...this.findLateralMoves(srcCoordinate));
+        possibleMoves.push(...this.findVerticalMoves(srcCoordinate));
+
+        return possibleMoves;
+    }
 
     findPossibleQueenMoves(srcCoordinate) {}
 
@@ -256,10 +263,55 @@ export class Board {
         return this.isCoordinateOnBoard(coordinate) && this.cellContainsPiece(coordinate);
     }
 
+    findLateralMoves(srcCoordinate) {
+        const currentFile = srcCoordinate[0];
+        const currentRank = srcCoordinate[1];
+
+        const moves = [];
+        
+        let f = fileToColumnNumber[currentFile] - 1;
+        let move = this.createCoordinate(columnNumberToFile[f], currentRank);
+        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+            moves.push(move);
+            move = this.createCoordinate(columnNumberToFile[--f], currentRank);
+        }
+
+        f = fileToColumnNumber[currentFile] + 1;
+        move = this.createCoordinate(columnNumberToFile[f], currentRank);
+        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+            moves.push(move);
+            move = this.createCoordinate(columnNumberToFile[++f], currentRank);
+        }
+        return moves;
+    }
+
+    findVerticalMoves(srcCoordinate) {
+        const currentFile = srcCoordinate[0];
+        const currentRank = srcCoordinate[1];
+
+        const moves = [];
+
+        let r = parseInt(currentRank) - 1;
+        let move = this.createCoordinate(currentFile, r);
+        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+            moves.push(move);
+            move = this.createCoordinate(currentFile, --r);
+        }
+
+        r = parseInt(currentRank) + 1;
+        move = this.createCoordinate(currentFile, r);
+        while (this.isCoordinateOnBoard(move) && !this.cellContainsPiece(move)) {
+            moves.push(move);
+            move = this.createCoordinate(currentFile, ++r);
+        }
+        return moves;
+    }
+
+    findDiagonalMoves(coordinate) {}
+
     isCoordinateOnBoard(coordinate) {
         const file = coordinate[0];
         const rank = coordinate[1];
-        
         return fileToColumnNumber[file] && rank >= 1 && rank <= masterConfig.boardSize;
     }
 
@@ -271,12 +323,12 @@ export class Board {
         return -1;
     }
 
-    cellContainsWhitePiece(coordinate) {
-        const cell = document.getElementById(coordinate);
-        if (cell) {
+    // cellContainsWhitePiece(coordinate) {
+    //     const cell = document.getElementById(coordinate);
+    //     if (cell) {
 
-        }
-    }
+    //     }
+    // }
 
     parseMove(move) {
         return move.length == 2 
@@ -305,4 +357,8 @@ export class Board {
         cellElement.appendChild(imgElement);
         cellElement.setAttribute('piece-type', piece);
     };
+
+    createCoordinate(file, rank) {
+        return `${file}${rank}`;
+    }
 };
