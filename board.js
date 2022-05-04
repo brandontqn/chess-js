@@ -95,6 +95,10 @@ export class Board {
         const [pieceType, dstCoordinate] = this.parseMove(move);
 
         const srcCoordinate = this.findSrcCoordinate(this.state.currentPlayer, pieceType, dstCoordinate);
+        if (srcCoordinate === -1) {
+            window.alert('Invalid move, try again.');
+            return;
+        }
         const fullPieceName = `${this.state.currentPlayer}_${pieceType}`;
 
         this.clearCell(srcCoordinate);
